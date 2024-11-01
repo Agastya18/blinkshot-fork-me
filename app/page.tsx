@@ -13,13 +13,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
+import { useUser, useClerk, UserButton,} from "@clerk/nextjs";
 type ImageResponse = {
   b64_json: string;
   timings: { inference: number };
 };
 
 export default function Home() {
+
+  const { user } = useUser();
+  const {openSignIn } = useClerk();
   const [prompt, setPrompt] = useState("");
   const [iterativeMode, setIterativeMode] = useState(false);
   const [userAPIKey, setUserAPIKey] = useState("");
@@ -71,6 +74,17 @@ export default function Home() {
             <Logo />
           </a>
         </div>
+        <div className=" flex flex-col  items-center justify-center   mr-2">
+       {
+        user ? (
+          <UserButton/>
+        ) : (
+          <button onClick={()=>openSignIn({})} className=' bg-zinc-600 items-center flex gap-4 sm:px-8 sm:py-3 px-4 py-2 text-sm rounded-full text-white '>
+        Get Start   
+        </button>
+        )
+       }
+        </div>
         <div>
           <label className="text-xs text-gray-200">
             [Optional] Add your{" "}
@@ -92,7 +106,9 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex justify-center">
+      {
+        user && (
+          <div className="flex justify-center">
         <form className="mt-10 w-full max-w-lg">
           <fieldset>
             <div className="relative">
@@ -127,6 +143,9 @@ export default function Home() {
           </fieldset>
         </form>
       </div>
+        )
+      }
+
 
       <div className="flex w-full grow flex-col items-center justify-center pb-8 pt-4 text-center">
         {!activeImage || !prompt ? (

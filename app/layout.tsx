@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import PlausibleProvider from "next-plausible";
 import localFont from "next/font/local";
 import "./globals.css";
+import { ClerkProvider} from '@clerk/nextjs'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -50,7 +51,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+   <ClerkProvider>
+     <html lang="en" className="h-full">
       <head>
         <meta name="color-scheme" content="dark" />
         <PlausibleProvider domain="blinkshot.io" />
@@ -62,5 +64,6 @@ export default function RootLayout({
         <Providers>{children}</Providers>
       </body>
     </html>
+   </ClerkProvider>
   );
 }
